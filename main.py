@@ -8,6 +8,37 @@ class Query:
         if self.type == 'add':
             self.name = query[2]
 
+class phone_book:
+    size = 1000
+    multiplier = 13
+
+    def __init__(self):
+        self.array = [None] * self.size
+
+    def get_hash(self, key):
+        hash = (key * self.multiplier) % self.size
+
+        return hash
+    
+    def add(self, number, name):
+        hash = self.get_hash(number)
+
+        self.array[hash] = name
+
+    def delete(self, number):
+        hash = self.get_hash(number)
+
+        self.array[hash] = None
+
+    def find(self, number):
+        hash = self.get_hash(number)
+
+        if self.array[hash] == None:
+            return 'not found'
+        
+        return self.array[hash]
+
+
 def read_queries():
     n = int(input())
     return [Query(input().split()) for i in range(n)]
@@ -17,21 +48,19 @@ def write_responses(result):
 
 def process_queries(queries):
     result = []
-    # Use a dictionary to store contacts
-    contacts = {}
+    
+    contacts = phone_book()
     for cur_query in queries:
         if cur_query.type == 'add':
-            # Add or update the contact in the dictionary
-            contacts[cur_query.number] = cur_query.name
-            
+        
+            contacts.add(cur_query.number, cur_query.name)
         elif cur_query.type == 'del':
-            # Remove the contact
-            contacts.pop(cur_query.number, None)
+            
+            contacts.delete(cur_query.number)
         else:
-            response = contacts.get(cur_query.number, 'not found')
-            result.append(response)
+            
+            result.append(contacts.find(cur_query.number))
     return result
 
 if __name__ == '__main__':
     write_responses(process_queries(read_queries()))
-    
