@@ -23,11 +23,11 @@ def process_queries(queries):
         if cur_query.type == 'add':
             # Add or update the contact in the dictionary
             contacts[cur_query.number] = cur_query.name
+            
         elif cur_query.type == 'del':
-            # Remove the contact from the dictionary
+            # Remove the contact
             contacts.pop(cur_query.number, None)
         else:
-            # Lookup the contact in the dictionary
             response = contacts.get(cur_query.number, 'not found')
             result.append(response)
     return result
