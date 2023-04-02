@@ -1,4 +1,5 @@
-# python3
+#221RDB412 Kārlis Rūdolfs Birznieks
+
 
 class Query:
     def __init__(self, query):
@@ -16,32 +17,21 @@ def write_responses(result):
 
 def process_queries(queries):
     result = []
-    # Keep list of all existing (i.e. not deleted yet) contacts.
-    contacts = []
+    # Use a dictionary to store contacts
+    contacts = {}
     for cur_query in queries:
         if cur_query.type == 'add':
-            # if we already have contact with such number,
-            # we should rewrite contact's name
-            for contact in contacts:
-                if contact.number == cur_query.number:
-                    contact.name = cur_query.name
-                    break
-            else: # otherwise, just add it
-                contacts.append(cur_query)
+            # Add or update the contact in the dictionary
+            contacts[cur_query.number] = cur_query.name
         elif cur_query.type == 'del':
-            for j in range(len(contacts)):
-                if contacts[j].number == cur_query.number:
-                    contacts.pop(j)
-                    break
+            # Remove the contact from the dictionary
+            contacts.pop(cur_query.number, None)
         else:
-            response = 'not found'
-            for contact in contacts:
-                if contact.number == cur_query.number:
-                    response = contact.name
-                    break
+            # Lookup the contact in the dictionary
+            response = contacts.get(cur_query.number, 'not found')
             result.append(response)
     return result
 
 if __name__ == '__main__':
     write_responses(process_queries(read_queries()))
-
+    
